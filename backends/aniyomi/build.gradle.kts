@@ -33,6 +33,7 @@ dependencies {
     api(libs.okhttp.zstd)
     api(libs.okio)
     api(libs.jsoup)
+    api(libs.nanohttpd)
     api(libs.injekt)
     api(libs.kotlinx.serialization.json)
     api(libs.kotlinx.serialization.protobuf)

@@ -3,7 +3,7 @@
  *
  * Upstream these ecosystems ran on the Flutter `flutter_qjs` engine plus the
  * Dart-side polyfills in lib/Services/LnReader/js_*.dart and
- * lib/Services/Mangayomi/Eval/javascript/*.dart. On Android the original app
+ * lib/Services/Mangayomi/Eval/javascript/ (Dart). On Android the original app
  * already shipped Rhino (org.mozilla:rhino, used by the CloudStream API surface),
  * and this module uses it as the extension engine so no Flutter/QJS bridge is
  * needed:

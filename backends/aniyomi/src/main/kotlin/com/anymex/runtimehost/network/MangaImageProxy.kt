@@ -178,7 +178,6 @@ object MangaImageProxy {
         pageUrl: String,
         pageNumber: Int
     ): ResponseData? {
-        val context = com.lagradost.cloudstream3.CloudStreamApp.context ?: return null
         val manager = uy.kohesive.injekt.Injekt.get<com.anymex.runtimehost.aniyomi.AniyomiExtensionManager>()
         
         val src = manager.installedMangaExtensions

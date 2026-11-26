@@ -33,6 +33,8 @@ sourceSets {
 
 dependencies {
     api(libs.kotlinx.coroutines.core)
+    // Android supplies org.json at runtime; the pure-JVM build needs it for compile + tests.
+    compileOnly(libs.org.json)
     api(libs.kotlinx.serialization.json)
     api(libs.okhttp)
     api(libs.okhttp.doh)
