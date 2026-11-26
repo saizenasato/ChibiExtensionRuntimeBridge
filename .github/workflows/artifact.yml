@@ -1,0 +1,104 @@
+name: Build artifacts
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: artifacts-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  GRADLE_OPTS: -Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false
+
+jobs:
+  build:
+    name: Assemble & test
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      # Android SDK is preinstalled on GitHub-hosted runners; accept licenses so
+      # any missing platform/build-tools are fetched on demand.
+      - name: Accept Android SDK licenses
+        run: yes | "$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
+
+      - name: Unit tests
+        run: ./gradlew testDebugUnitTest --stacktrace
+
+      - name: Build runtime host APK
+        run: ./gradlew :runtime-host:assembleDebug :runtime-host:assembleRelease --stacktrace
+
+      - name: Build SDK AARs
+        run: ./gradlew :bridge-sdk:assembleRelease :bridge-api:assembleRelease :bridge-models:assembleRelease --stacktrace
+
+      - name: Build sample host APK
+        run: ./gradlew :sample-host:assembleDebug --stacktrace
+
+      - name: Collect artifacts
+        if: always()
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts
+          find . -path ./_ref -prune -o -name '*.apk' -print -o -name '*.aar' -print \
+            | grep -E '/(debug|release)/' | while read -r f; do
+              cp "$f" "artifacts/$(echo "$f" | sed 's#^\./##; s#/#_#g')"
+            done
+          ls -l artifacts
+
+      - name: Upload runtime host APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: runtime-host-apk
+          path: |
+            runtime-host/build/outputs/apk/**/*.apk
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload SDK AARs
+        uses: actions/upload-artifact@v4
+        with:
+          name: bridge-sdk-aar
+          path: |
+            bridge-sdk/build/outputs/aar/*.aar
+            bridge-api/build/outputs/aar/*.aar
+            bridge-models/build/outputs/aar/*.aar
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload sample host APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-host-apk
+          path: sample-host/build/outputs/apk/**/*.apk
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: '**/build/reports/tests/**'
+          if-no-files-found: ignore
+          retention-days: 14
