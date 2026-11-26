@@ -43,8 +43,18 @@ jobs:
       - name: Accept Android SDK licenses
         run: yes | "$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
 
+      # Kotlin/Gradle errors are echoed as ::error:: annotations so they show up
+      # on the public run summary without needing the signed-in log viewer.
       - name: Unit tests
-        run: ./gradlew testDebugUnitTest --stacktrace
+        run: |
+          set +e
+          ./gradlew testDebugUnitTest --stacktrace 2>&1 | tee /tmp/gradle.log
+          status=${PIPESTATUS[0]}
+          if [ "$status" -ne 0 ]; then
+            grep -nE '^e: |^error:|What went wrong|Execution failed for task|Caused by' /tmp/gradle.log \
+              | head -60 | while IFS= read -r line; do echo "::error::${line}"; done
+          fi
+          exit "$status"
 
       - name: Build runtime host APK
         run: ./gradlew :runtime-host:assembleDebug :runtime-host:assembleRelease --stacktrace
@@ -90,7 +100,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: sample-host-apk
-          path: sample-host/build/outputs/apk/**/*.apk
+          path: |
+            sample-host/build/outputs/apk/**/*.apk
           if-no-files-found: error
           retention-days: 30
 
