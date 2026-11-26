@@ -65,14 +65,30 @@ jobs:
           fi
           exit "$status"
 
-      - name: Build runtime host APK
-        run: ./gradlew :runtime-host:assembleDebug :runtime-host:assembleRelease --stacktrace
-
-      - name: Build SDK AARs
-        run: ./gradlew :bridge-sdk:assembleRelease :bridge-api:assembleRelease :bridge-models:assembleRelease --stacktrace
-
-      - name: Build sample host APK
-        run: ./gradlew :sample-host:assembleDebug --stacktrace
+      # One invocation so every packaging task gets a chance to report its errors.
+      - name: Assemble artifacts
+        run: |
+          set +e
+          ./gradlew \
+            :runtime-host:assembleDebug :runtime-host:assembleRelease \
+            :bridge-sdk:assembleRelease :bridge-api:assembleRelease :bridge-models:assembleRelease \
+            :sample-host:assembleDebug \
+            --continue --stacktrace 2>&1 | tee /tmp/assemble.log
+          status=${PIPESTATUS[0]}
+          if [ "$status" -ne 0 ]; then
+            grep -E '^e: |^error:|What went wrong|Execution failed for task|FAILURE' /tmp/assemble.log \
+              | sed -E 's#file:///home/runner/work/ChibiExtensionRuntimeBridge/ChibiExtensionRuntimeBridge/##' \
+              | head -400 > /tmp/build-errors.txt
+            git config user.name 'chibi-ci'
+            git config user.email 'ci@users.noreply.github.com'
+            git checkout -q -B ci-logs
+            cp /tmp/build-errors.txt build-errors.txt
+            git add -f build-errors.txt
+            git commit -q -m 'CI: assemble error list'
+            git push -f -q origin ci-logs:ci-logs || true
+            git checkout -q -- . || true
+          fi
+          exit "$status"
 
       - name: Collect artifacts
         if: always()
