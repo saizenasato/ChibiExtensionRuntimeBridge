@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+
+    <queries>
+        <package android:name="com.anymex.runtimehost" />
+        <intent>
+            <action android:name="io.chibi.bridge.action.RUNTIME_HOST" />
+        </intent>
+    </queries>
+
+    <application>
+        <!-- Hands a downloaded runtime host APK to the package installer. -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.chibi.runtime.host.files"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/chibi_host_paths" />
+        </provider>
+    </application>
+</manifest>

@@ -1,0 +1,22 @@
+# Build output
+build/
+*/build/
+**/build/
+.gradle/
+.kotlin/
+local.properties
+
+# Reference checkouts and toolchains used for the porting audit (not part of the project)
+_ref/
+_toolchain/
+
+# IDE
+.idea/
+*.iml
+*.hprof
+
+# Keystores / secrets
+*.jks
+*.keystore
+keystore.properties
+.env

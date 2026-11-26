@@ -1,0 +1,40 @@
+ChibiExtensionRuntimeBridge
+Copyright (C) 2026 the ChibiExtensionRuntimeBridge contributors
+
+This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+This project is a native Kotlin port of the AnymeX Extension Runtime Bridge.
+
+Upstream components reused or ported (see docs/LICENSE_COMPLIANCE.md):
+
+* AnymeX Extension Runtime Bridge — https://github.com/RyanYuuki/AnymeXExtensionRuntimeBridge
+  Copyright (C) RyanYuuki and contributors.
+  Licensed under the Unabandon Public License (UPL), which incorporates and
+  extends GPL-3.0.  The Android runtime host sources, the extension bridge
+  architecture, the Dart model/extension layer and the Kotatsu parser library
+  included in this repository are derived from that project.
+
+* Aniyomi — https://github.com/aniyomiorg/aniyomi — Apache License 2.0.
+  The `eu.kanade.tachiyomi.*`, `mihon.*` and `tachiyomi.*` API stubs under
+  backends/aniyomi are derived from AnymeX's Aniyomi API surface.
+
+* CloudStream — https://github.com/recloudstream/cloudstream — GPL-3.0.
+  The `com.lagradost.cloudstream3.*` API surface under backends/cloudstream is
+  derived from AnymeX's CloudStream API stubs.
+
+* Kotatsu — https://github.com/KotatsuApp/Kotatsu and https://github.com/DrakenThemes/kotatsu-parsers
+  (via AnymeX's `kotatsu_ext` module) — GPL-3.0.
+
+* LnReader — https://github.com/LNReader/lnreader — Apache-2.0 (plugin formats).
+* Mangayomi — https://github.com/kodjodevf/mangayomi — Apache-2.0 (plugin formats).
+* Legado (阅读) — https://github.com/gedoor/legado — GPL-3.0 (rule format).
+* iReader — https://github.com/IReaderOrg/IReader — Apache-2.0.
+* TorrServer — https://github.com/YouROK/TorrServer — GPL-3.0.
+* Dartotsu Extension Bridge — https://github.com/aayush2622/DartotsuExtensionBridge — UPL / GPL-3.0
+  (Tsundoku/iReader repository formats, TorrServer addon design).
+
+See the LICENSE file for the full GPL-3.0 text; the upstream Unabandon Public
+License text is kept in licenses/UPL.md.
