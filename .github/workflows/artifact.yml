@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: read
+  contents: write
 
 env:
   GRADLE_OPTS: -Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false
@@ -43,22 +43,25 @@ jobs:
       - name: Accept Android SDK licenses
         run: yes | "$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
 
-      # --continue makes every module report its own errors in one run, and the
-      # list is copied to the public step summary (the raw log needs a sign-in).
+      # --continue makes every module report its own errors in one run. The filtered
+      # error list is pushed to the ci-logs branch because raw logs need a sign-in.
       - name: Unit tests
         run: |
           set +e
           ./gradlew testDebugUnitTest --continue --stacktrace 2>&1 | tee /tmp/gradle.log
           status=${PIPESTATUS[0]}
           if [ "$status" -ne 0 ]; then
-            {
-              echo '## Gradle failures'
-              echo '```'
-              grep -E '^e: |^error:|What went wrong|Execution failed for task' /tmp/gradle.log \
-                | sed -E 's#file:///home/runner/work/ChibiExtensionRuntimeBridge/ChibiExtensionRuntimeBridge/##' \
-                | head -300
-              echo '```'
-            } >> "$GITHUB_STEP_SUMMARY"
+            grep -E '^e: |^error:|What went wrong|Execution failed for task' /tmp/gradle.log \
+              | sed -E 's#file:///home/runner/work/ChibiExtensionRuntimeBridge/ChibiExtensionRuntimeBridge/##' \
+              | head -400 > /tmp/gradle-errors.txt
+            git config user.name 'chibi-ci'
+            git config user.email 'ci@users.noreply.github.com'
+            git checkout -q -B ci-logs
+            cp /tmp/gradle-errors.txt gradle-errors.txt
+            git add -f gradle-errors.txt
+            git commit -q -m 'CI: gradle error list'
+            git push -f -q origin ci-logs:ci-logs || true
+            git checkout -q -- . || true
           fi
           exit "$status"
 
