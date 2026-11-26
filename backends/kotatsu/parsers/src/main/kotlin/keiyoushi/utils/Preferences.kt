@@ -18,7 +18,7 @@ public inline fun getPreferences(sourceId: Long): SharedPreferences {
     return try {
         Injekt.get(Application::class.java).getSharedPreferences("source_$sourceId", 0x0000)
     } catch (e: Exception) {
-        android.util.Log.e("AnymeXPreferences", "Failed to get SharedPreferences for source $sourceId: ${e.message}", e)
+        System.err.println("AnymeXPreferences: Failed to get SharedPreferences for source $sourceId: ${e.message}")
         keiyoushi.utils.InMemorySharedPreferences()
     }
 }

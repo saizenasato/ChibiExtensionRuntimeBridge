@@ -126,7 +126,7 @@ class JsEngine(
             when (value) {
                 null, Context.getUndefinedValue() -> "null"
                 is org.mozilla.javascript.Undefined -> "null"
-                is org.mozilla.javascript.NativeJavaObject -> json.encodeToString(JsonPrimitive(value.toString()), kotlinx.serialization.json.JsonElement.serializer())
+                is org.mozilla.javascript.NativeJavaObject -> json.encodeToString(kotlinx.serialization.json.JsonElement.serializer(), JsonPrimitive(value.toString()))
                 is String -> "\"" + value.toString().replace("\\", "\\\\").replace("\"", "\\\"") + "\""
                 else -> value.toString()
             }
@@ -297,8 +297,8 @@ class JsEngine(
             buildString {
                 append("{\"id\":\"").append(childId(el)).append("\",")
                 append("\"tag\":\"").append(el.tagName()).append("\",")
-                append("\"text\":").append(json.encodeToString(JsonPrimitive(el.text()), kotlinx.serialization.json.JsonElement.serializer())).append(",")
-                append("\"html\":").append(json.encodeToString(JsonPrimitive(el.html()), kotlinx.serialization.json.JsonElement.serializer())).append(",")
+                append("\"text\":").append(json.encodeToString(kotlinx.serialization.json.JsonElement.serializer(), JsonPrimitive(el.text()))).append(",")
+                append("\"html\":").append(json.encodeToString(kotlinx.serialization.json.JsonElement.serializer(), JsonPrimitive(el.html()))).append(",")
                 append("\"attrs\":").append(json.encodeToString(JsonObject.serializer(), attrs))
                 append("}")
             }
