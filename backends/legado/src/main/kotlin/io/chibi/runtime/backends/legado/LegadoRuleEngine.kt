@@ -173,7 +173,7 @@ object LegadoRuleEngine {
                 match == null -> ""
                 regexReplacement != null && regexReplacement.isNotEmpty() -> {
                     val groups = match.groupValues.drop(1)
-                    var replaced = regexReplacement
+                    var replaced: String = regexReplacement ?: ""
                     groups.forEachIndexed { i, g -> replaced = replaced.replace("$${i + 1}", g) }
                     replaced.ifEmpty { match.value }
                 }

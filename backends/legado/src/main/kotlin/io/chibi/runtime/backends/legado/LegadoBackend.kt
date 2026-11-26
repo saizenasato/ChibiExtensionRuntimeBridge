@@ -201,7 +201,7 @@ class LegadoBackend : ExtensionBackend {
         ctx.logger.info("Legado", "Installed book source ${parsed.name}")
     }
 
-    override suspend fun uninstall(source: Source) = withContext(Dispatchers.IO) {
+    override suspend fun uninstall(source: Source): Unit = withContext(Dispatchers.IO) {
         File(sourcesDir(), fileNameFor(source.baseUrl)).delete()
     }
 

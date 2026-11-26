@@ -171,7 +171,7 @@ class MangayomiBackend : ExtensionBackend {
         File(scriptsDir(), "$safeName.json").writeText(BridgeJson.encodeToString(JsonObject.serializer(), meta))
     }
 
-    override suspend fun uninstall(source: Source) = withContext(Dispatchers.IO) {
+    override suspend fun uninstall(source: Source): Unit = withContext(Dispatchers.IO) {
         val safeName = source.name.replace(Regex("[^A-Za-z0-9._-]"), "_")
         File(scriptsDir(), "$safeName.js").delete()
         File(scriptsDir(), "$safeName.json").delete()
@@ -194,7 +194,7 @@ class MangayomiBackend : ExtensionBackend {
         return LnReaderSource(manifest.toSource(), manifest)
     }
 
-    inner class LnReaderSource(override val source: Source, private val manifest: Manifest) : ExtensionSource {
+    private inner class LnReaderSource(override val source: Source, private val manifest: Manifest) : ExtensionSource {
 
         private fun engine(): JsEngine {
             val engine = JsEngine(
