@@ -2,6 +2,17 @@ name: Import sources
 
 on:
   workflow_dispatch:
+    inputs:
+      archive_url:
+        description: Archive URL
+        required: true
+      archive_sha256:
+        description: Archive SHA-256
+        required: true
+      message:
+        description: Commit message
+        required: false
+        default: Import the ported sources
 
 permissions:
   contents: write
@@ -16,12 +27,17 @@ jobs:
           fetch-depth: 0
 
       - name: Download archive
+        env:
+          ARCHIVE_URL: ${{ inputs.archive_url }}
+          ARCHIVE_SHA256: ${{ inputs.archive_sha256 }}
         run: |
           set -euo pipefail
-          curl -fsSL --retry 5 -o /tmp/sources.tar.xz https://x0.at/Abdt.xz
-          echo "f59aaefa167e91dc3c9e5b30f3d991cbf980233fa2448a575366107b98e427fa  /tmp/sources.tar.xz" | sha256sum -c -
+          curl -fsSL --retry 5 -o /tmp/sources.tar.xz "$ARCHIVE_URL"
+          echo "$ARCHIVE_SHA256  /tmp/sources.tar.xz" | sha256sum -c -
 
       - name: Replace worktree and push
+        env:
+          MESSAGE: ${{ inputs.message }}
         run: |
           set -euo pipefail
           mkdir -p /tmp/src
@@ -34,7 +50,7 @@ jobs:
           if git diff --cached --quiet; then
             echo 'Archive matches main already'
           else
-            git commit -q -m "Import the CloudStream API tree and module fixes"
+            git commit -q -m "$MESSAGE"
             git push origin HEAD:main
           fi
 
