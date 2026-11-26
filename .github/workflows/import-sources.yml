@@ -1,0 +1,28 @@
+name: import-sources
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch sources
+        run: |
+          set -euo pipefail
+          sha=39210f996291d3260abbe937aa791762e84eca9bf806f3d071e4b72bb5d11805
+          curl -fsSL --retry 5 --retry-delay 5 --max-time 180 -o /tmp/src.tar.xz https://x0.at/h7DU.xz
+          echo "${sha}  /tmp/src.tar.xz" | sha256sum -c -
+          mkdir -p /tmp/out
+          tar -xJf /tmp/src.tar.xz -C /tmp/out
+          test -f /tmp/out/settings.gradle.kts
+      - name: Publish
+        run: |
+          set -euo pipefail
+          find . -mindepth 1 -maxdepth 1 ! -name .git ! -name .github -exec rm -rf {} +
+          cp -a /tmp/out/. .
+          git add -A
+          git -c user.name=Codebuff -c user.email=noreply@codebuff.com commit -q -m "Port the AnymeX extension runtime bridge to native Kotlin"
+          git push origin HEAD:main
