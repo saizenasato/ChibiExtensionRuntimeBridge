@@ -43,16 +43,22 @@ jobs:
       - name: Accept Android SDK licenses
         run: yes | "$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
 
-      # Kotlin/Gradle errors are echoed as ::error:: annotations so they show up
-      # on the public run summary without needing the signed-in log viewer.
+      # --continue makes every module report its own errors in one run, and the
+      # list is copied to the public step summary (the raw log needs a sign-in).
       - name: Unit tests
         run: |
           set +e
-          ./gradlew testDebugUnitTest --stacktrace 2>&1 | tee /tmp/gradle.log
+          ./gradlew testDebugUnitTest --continue --stacktrace 2>&1 | tee /tmp/gradle.log
           status=${PIPESTATUS[0]}
           if [ "$status" -ne 0 ]; then
-            grep -nE '^e: |^error:|What went wrong|Execution failed for task|Caused by' /tmp/gradle.log \
-              | head -60 | while IFS= read -r line; do echo "::error::${line}"; done
+            {
+              echo '## Gradle failures'
+              echo '```'
+              grep -E '^e: |^error:|What went wrong|Execution failed for task' /tmp/gradle.log \
+                | sed -E 's#file:///home/runner/work/ChibiExtensionRuntimeBridge/ChibiExtensionRuntimeBridge/##' \
+                | head -300
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
           fi
           exit "$status"
 
