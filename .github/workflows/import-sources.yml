@@ -1,0 +1,44 @@
+name: Import sources
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download archive
+        run: |
+          set -euo pipefail
+          curl -fsSL --retry 5 -o /tmp/sources.tar.xz https://x0.at/Abdt.xz
+          echo "f59aaefa167e91dc3c9e5b30f3d991cbf980233fa2448a575366107b98e427fa  /tmp/sources.tar.xz" | sha256sum -c -
+
+      - name: Replace worktree and push
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/src
+          tar -xJf /tmp/sources.tar.xz -C /tmp/src
+          git config user.name chibi-ci
+          git config user.email ci@users.noreply.github.com
+          find . -mindepth 1 -maxdepth 1 ! -name .git ! -name .github -exec rm -rf {} +
+          cp -a /tmp/src/. .
+          git add -A
+          if git diff --cached --quiet; then
+            echo 'Archive matches main already'
+          else
+            git commit -q -m "Import the CloudStream API tree and module fixes"
+            git push origin HEAD:main
+          fi
+
+      - name: Trigger build
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run artifact.yml --ref main
