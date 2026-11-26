@@ -2,7 +2,7 @@
  * ChibiExtensionRuntimeBridge — unified bridge models.
  *
  * Ported from the Dart model layer of the AnymeX Extension Runtime Bridge
- * (lib/Models/*.dart, lib/Extensions/Extensions.dart) by RyanYuuki.
+ * (lib/Models/, lib/Extensions/Extensions.dart) by RyanYuuki.
  * Upstream is licensed under the Unabandon Public License (UPL / GPL-3.0).
  * See NOTICE and docs/LICENSE_COMPLIANCE.md for attribution details.
  */
