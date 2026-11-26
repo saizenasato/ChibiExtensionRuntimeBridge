@@ -115,7 +115,7 @@ object HostBridge {
             client = client,
             preferences = preferences,
             logger = logger,
-            config = TorrServerAddon.Config(
+            initialConfig = TorrServerAddon.Config(
                 serverUrl = preferences.getString("torrserver_url") ?: "http://127.0.0.1:8090",
                 username = preferences.getString("torrserver_user"),
                 password = preferences.getString("torrserver_password"),

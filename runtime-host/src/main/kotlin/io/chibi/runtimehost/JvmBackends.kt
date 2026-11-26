@@ -75,8 +75,8 @@ private fun Filter.toJsonMap(): Map<String, Any?> = mapOf(
 private fun JsonObject.mapFilters(): List<Filter> = (this["list"] as? JsonArray)?.mapNotNull { el ->
     val obj = el as? JsonObject ?: return@mapNotNull null
     Filter(
-        name = obj.string("name") ?: "",
-        type = obj.string("type") ?: "Unknown",
+        name = obj.str("name") ?: "",
+        type = obj.str("type") ?: "Unknown",
         values = (obj["values"] as? JsonArray)?.mapNotNull { (it as? JsonPrimitive)?.contentOrNull } ?: emptyList(),
         state = obj["state"] ?: JsonPrimitive(""),
     )
@@ -181,7 +181,7 @@ class AniyomiBackend : ExtensionBackend {
         if (pkg.isNotBlank()) ExtensionInstaller.uninstallPackage(app, pkg)
     }
 
-    override suspend fun update(source: Source) = install(source)
+    override suspend fun update(source: Source): Unit = install(source)
 
     override suspend fun status(): BackendStatus {
         val count = runCatching {
@@ -368,7 +368,7 @@ class CloudStreamBackend : ExtensionBackend {
         (ctx.preferences.getString("repos_$id")?.split('\n')?.filter { it.isNotBlank() } ?: emptyList())
             .map { Repo(url = it, managerId = id) }
 
-    override suspend fun install(source: Source) = withContext(Dispatchers.IO) {
+    override suspend fun install(source: Source): Unit = withContext(Dispatchers.IO) {
         val pluginUrl = source.baseUrl
         val dir = File(ctx.filesDir, "cloudstream_plugins").apply { mkdirs() }
         val fileName = pluginUrl.substringAfterLast('/').ifBlank { "${source.id}.jar" }
@@ -394,7 +394,7 @@ class CloudStreamBackend : ExtensionBackend {
         }
     }
 
-    override suspend fun update(source: Source) = install(source)
+    override suspend fun update(source: Source): Unit = install(source)
 
     override suspend fun status(): BackendStatus {
         val count = runCatching { providers().size }.getOrDefault(0)
@@ -554,20 +554,20 @@ class KotatsuBackend : ExtensionBackend {
         (ctx.preferences.getString("repos_$id")?.split('\n')?.filter { it.isNotBlank() } ?: emptyList())
             .map { Repo(url = it, managerId = id) }
 
-    override suspend fun install(source: Source) = withContext(Dispatchers.IO) {
+    override suspend fun install(source: Source): Unit = withContext(Dispatchers.IO) {
         val jar = File(source.baseUrl)
         if (!jar.exists()) throw BackendException("NOT_FOUND", "Kotatsu jar not found: ${source.baseUrl}", id)
         jar.copyTo(File(extensionsDir(), jar.name), overwrite = true)
         load()
     }
 
-    override suspend fun uninstall(source: Source) = withContext(Dispatchers.IO) {
+    override suspend fun uninstall(source: Source): Unit = withContext(Dispatchers.IO) {
         File(extensionsDir()).listFiles()
             ?.filter { it.name.contains(source.id.substringAfterLast('/')) }
             ?.forEach { it.delete() }
     }
 
-    override suspend fun update(source: Source) = install(source)
+    override suspend fun update(source: Source): Unit = install(source)
 
     override suspend fun status(): BackendStatus {
         val count = runCatching { load().size }.getOrDefault(0)

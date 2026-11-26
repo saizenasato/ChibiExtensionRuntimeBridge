@@ -62,7 +62,7 @@ object HostHttp {
         .followRedirects(true)
         .apply {
             val cacheDir = File(context.cacheDir, "http_cache").apply { mkdirs() }
-            cache(java.net.ResponseCache.NO_CACHE.let { okhttp3.Cache(cacheDir, 32L * 1024 * 1024) })
+            cache(okhttp3.Cache(cacheDir, 32L * 1024 * 1024))
         }
         .build()
 }

@@ -40,11 +40,11 @@ fun JsonElement.toPlainMap(): Any? = when (this) {
         content == "false" -> false
         else -> content.toDoubleOrNull()?.let { if (it == it.toInt().toDouble()) it.toInt() else it } ?: content
     }
-    is JsonObject -> entries.mapValues { it.value.toPlainMap() }
+    is JsonObject -> mapValues { it.value.toPlainMap() }
     is JsonArray -> map { it.toPlainMap() }
 }
 
-fun JsonObject.toPlain(): Map<String, Any?> = entries.mapValues { it.value.toPlainMap() }
+fun JsonObject.toPlain(): Map<String, Any?> = mapValues { it.value.toPlainMap() }
 
 fun Map<String, Any?>.toJsonObject(): JsonObject = buildJsonObject {
     forEach { (k, v) -> put(k, v.toJsonElement()) }

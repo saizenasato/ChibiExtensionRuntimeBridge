@@ -27,7 +27,7 @@ class NetworkHelper(
                 ?: "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36"
         }
 
-        internal fun initUserAgent(context: Context) {
+        fun initUserAgent(context: Context) {
             if (resolvedUa != null) return
             try {
                 val raw = android.webkit.WebSettings.getDefaultUserAgent(context)
