@@ -51,7 +51,7 @@ jobs:
           ./gradlew testDebugUnitTest --continue --stacktrace 2>&1 | tee /tmp/gradle.log
           status=${PIPESTATUS[0]}
           if [ "$status" -ne 0 ]; then
-            grep -E '^e: |^error:|What went wrong|Execution failed for task' /tmp/gradle.log \
+            grep -E '^e: |^error:|What went wrong|Execution failed|FAILURE|^> |^\* ' /tmp/gradle.log \
               | sed -E 's#file:///home/runner/work/ChibiExtensionRuntimeBridge/ChibiExtensionRuntimeBridge/##' \
               | head -400 > /tmp/gradle-errors.txt
             git config user.name 'chibi-ci'
@@ -76,7 +76,7 @@ jobs:
             --continue --stacktrace 2>&1 | tee /tmp/assemble.log
           status=${PIPESTATUS[0]}
           if [ "$status" -ne 0 ]; then
-            grep -E '^e: |^error:|What went wrong|Execution failed for task|FAILURE' /tmp/assemble.log \
+            grep -E '^e: |^error:|What went wrong|Execution failed|FAILURE|^> |^\* ' /tmp/assemble.log \
               | sed -E 's#file:///home/runner/work/ChibiExtensionRuntimeBridge/ChibiExtensionRuntimeBridge/##' \
               | head -400 > /tmp/build-errors.txt
             git config user.name 'chibi-ci'
