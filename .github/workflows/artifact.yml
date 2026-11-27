@@ -1,3 +1,72 @@
+name: Build artifacts
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: artifacts-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+env:
+  GRADLE_OPTS: -Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false
+
+jobs:
+  build:
+    name: Assemble & test
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      # Android SDK is preinstalled on GitHub-hosted runners; accept licenses so
+      # any missing platform/build-tools are fetched on demand.
+      - name: Accept Android SDK licenses
+        run: yes | "$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
+
+      # --continue makes every module report its own errors in one run. The filtered
+      # error list is pushed to the ci-logs branch because raw logs need a sign-in.
+      - name: Unit tests
+        run: |
+          set +e
+          ./gradlew testDebugUnitTest :bridge-models:test --continue --stacktrace 2>&1 | tee /tmp/gradle.log
+          status=${PIPESTATUS[0]}
+          if [ "$status" -ne 0 ]; then
+            sed -E 's#file:///home/runner/work/ChibiExtensionRuntimeBridge/ChibiExtensionRuntimeBridge/##' /tmp/gradle.log \
+              | grep -E '^e: |^error:|What went wrong|Execution failed|FAILURE|^\* |Caused by|^> Task .*FAILED' \
+              | head -200 > /tmp/gradle-errors.txt
+            git config user.name 'chibi-ci'
+            git config user.email 'ci@users.noreply.github.com'
+            git checkout -q -B ci-logs
+            cp /tmp/gradle-errors.txt gradle-errors.txt
+            git add -f gradle-errors.txt
+            git commit -q -m 'CI: gradle error list'
+            git push -f -q origin ci-logs:ci-logs || true
+            git checkout -q -- . || true
+          fi
+          exit "$status"
+
+      # One invocation so every packaging task gets a chance to report its errors.
+      # :bridge-models is a plain JVM library, so it has assemble/jar, not assembleRelease.
       - name: Assemble artifacts
         run: |
           set +e
@@ -8,11 +77,11 @@
             --continue --stacktrace 2>&1 | tee /tmp/assemble.log
           status=${PIPESTATUS[0]}
           if [ "$status" -ne 0 ]; then
-            strip_paths() { sed -E 's#file:///home/runner/work/ChibiExtensionRuntimeBridge/ChibiExtensionRuntimeBridge/##'; }
+            sed -E 's#file:///home/runner/work/ChibiExtensionRuntimeBridge/ChibiExtensionRuntimeBridge/##' /tmp/assemble.log > /tmp/assemble-clean.log
             {
-              grep -E '^e: |^error:|What went wrong|Execution failed|FAILURE|^\* |Caused by|^> Task .*FAILED|^\s+> ' /tmp/assemble.log | strip_paths | head -250
+              grep -E '^e: |^error:|What went wrong|Execution failed|FAILURE|^\* |Caused by|^> Task .*FAILED' /tmp/assemble-clean.log | head -200
               echo '==== LOG TAIL ===='
-              tail -n 200 /tmp/assemble.log | strip_paths
+              tail -n 200 /tmp/assemble-clean.log
             } > /tmp/build-errors.txt
             git config user.name 'chibi-ci'
             git config user.email 'ci@users.noreply.github.com'
@@ -24,3 +93,52 @@
             git checkout -q -- . || true
           fi
           exit "$status"
+
+      - name: Collect artifacts
+        if: always()
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts
+          find . -path ./_ref -prune -o -name '*.apk' -print -o -name '*.aar' -print -o -name 'bridge-models*.jar' -print \
+            | grep -E '/(debug|release|libs)/' | while read -r f; do
+              cp "$f" "artifacts/$(echo "$f" | sed 's#^\./##; s#/#_#g')"
+            done
+          ls -l artifacts
+
+      - name: Upload runtime host APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: runtime-host-apk
+          path: |
+            runtime-host/build/outputs/apk/**/*.apk
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload SDK AARs
+        uses: actions/upload-artifact@v4
+        with:
+          name: bridge-sdk-aar
+          path: |
+            bridge-sdk/build/outputs/aar/*.aar
+            bridge-api/build/outputs/aar/*.aar
+            bridge-models/build/libs/*.jar
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload sample host APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-host-apk
+          path: |
+            sample-host/build/outputs/apk/**/*.apk
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: '**/build/reports/tests/**'
+          if-no-files-found: ignore
+          retention-days: 14
