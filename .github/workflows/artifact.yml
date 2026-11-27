@@ -48,7 +48,7 @@ jobs:
       - name: Unit tests
         run: |
           set +e
-          ./gradlew testDebugUnitTest --continue --stacktrace 2>&1 | tee /tmp/gradle.log
+          ./gradlew testDebugUnitTest :bridge-models:test --continue --stacktrace 2>&1 | tee /tmp/gradle.log
           status=${PIPESTATUS[0]}
           if [ "$status" -ne 0 ]; then
             grep -E '^e: |^error:|What went wrong|Execution failed|FAILURE|^> |^\* ' /tmp/gradle.log \
@@ -66,12 +66,13 @@ jobs:
           exit "$status"
 
       # One invocation so every packaging task gets a chance to report its errors.
+      # :bridge-models is a plain JVM library, so it has assemble/jar, not assembleRelease.
       - name: Assemble artifacts
         run: |
           set +e
           ./gradlew \
             :runtime-host:assembleDebug :runtime-host:assembleRelease \
-            :bridge-sdk:assembleRelease :bridge-api:assembleRelease :bridge-models:assembleRelease \
+            :bridge-sdk:assembleRelease :bridge-api:assembleRelease :bridge-models:assemble \
             :sample-host:assembleDebug \
             --continue --stacktrace 2>&1 | tee /tmp/assemble.log
           status=${PIPESTATUS[0]}
@@ -95,8 +96,8 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p artifacts
-          find . -path ./_ref -prune -o -name '*.apk' -print -o -name '*.aar' -print \
-            | grep -E '/(debug|release)/' | while read -r f; do
+          find . -path ./_ref -prune -o -name '*.apk' -print -o -name '*.aar' -print -o -name 'bridge-models*.jar' -print \
+            | grep -E '/(debug|release|libs)/' | while read -r f; do
               cp "$f" "artifacts/$(echo "$f" | sed 's#^\./##; s#/#_#g')"
             done
           ls -l artifacts
@@ -117,7 +118,7 @@ jobs:
           path: |
             bridge-sdk/build/outputs/aar/*.aar
             bridge-api/build/outputs/aar/*.aar
-            bridge-models/build/outputs/aar/*.aar
+            bridge-models/build/libs/*.jar
           if-no-files-found: error
           retention-days: 30
 
