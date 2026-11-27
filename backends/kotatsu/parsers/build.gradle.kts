@@ -29,6 +29,10 @@ sourceSets {
     main {
         kotlin.srcDir("src/main/kotlin")
     }
+    // Compile-time stand-ins: android/androidx stubs plus the Aniyomi API subset the
+    // Keiyoushi parsers are written against. :backends:aniyomi packages the real
+    // Aniyomi classes, so these must never be published by this module.
+    create("shim")
 }
 
 dependencies {
@@ -42,11 +46,18 @@ dependencies {
     api(libs.jsoup)
     api(libs.androidx.annotation)
     api(libs.androidx.collection.ktx)
+
+    "shimImplementation"(libs.kotlinx.coroutines.core)
+    "shimImplementation"(libs.okhttp)
+    "shimImplementation"(libs.jsoup)
+    "shimImplementation"(libs.rxjava)
+    "shimCompileOnly"(libs.org.json)
+
+    compileOnly(sourceSets["shim"].output)
+    testImplementation(sourceSets["shim"].output)
 }
 
-// The eu.kanade.tachiyomi classes in this tree are compile-time stand-ins for the
-// Aniyomi API. :backends:aniyomi packages the real implementations, so keep the
-// stand-ins out of the jar to avoid duplicate classes when both modules are dexed.
+// Belt and braces: nothing from the stand-ins may reach consumers.
 tasks.withType<Jar> {
     exclude("android/**", "androidx/**", "eu/kanade/**")
 }

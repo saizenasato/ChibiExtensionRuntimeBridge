@@ -18,6 +18,9 @@ android {
 dependencies {
     api(project(":backend-api"))
     api(project(":runtime-core"))
+    // The Keiyoushi parsers are written against the Aniyomi API; the real classes
+    // come from :backends:aniyomi, the parsers module only compiles against stubs.
+    api(project(":backends:aniyomi"))
     api(project(":backends:kotatsu-parsers"))
     api(libs.androidx.appcompat)
     api(libs.kotlinx.coroutines.core)
