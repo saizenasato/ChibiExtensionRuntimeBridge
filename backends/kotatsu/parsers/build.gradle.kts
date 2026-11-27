@@ -44,6 +44,9 @@ dependencies {
     api(libs.androidx.collection.ktx)
 }
 
+// The eu.kanade.tachiyomi classes in this tree are compile-time stand-ins for the
+// Aniyomi API. :backends:aniyomi packages the real implementations, so keep the
+// stand-ins out of the jar to avoid duplicate classes when both modules are dexed.
 tasks.withType<Jar> {
-    exclude("android/**", "androidx/**")
+    exclude("android/**", "androidx/**", "eu/kanade/**")
 }
