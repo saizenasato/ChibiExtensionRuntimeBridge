@@ -46,6 +46,9 @@ dependencies {
     api(libs.jsoup)
     api(libs.androidx.annotation)
     api(libs.androidx.collection.ktx)
+    // Keiyoushi parsers use the real RxJava 1 and Injekt; no local copies ship.
+    compileOnly(libs.rxjava)
+    compileOnly(libs.injekt)
 
     "shimImplementation"(libs.kotlinx.coroutines.core)
     "shimImplementation"(libs.okhttp)
