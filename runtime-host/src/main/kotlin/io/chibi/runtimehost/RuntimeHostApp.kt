@@ -10,6 +10,7 @@ import android.app.Application
 class RuntimeHostApp : Application() {
     override fun onCreate() {
         super.onCreate()
+        keiyoushi.utils.PreferencesHost.application = this
         HostBridge.initialize(this)
     }
 }

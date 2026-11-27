@@ -3,7 +3,6 @@ package keiyoushi.utils
 import android.app.Application
 import android.content.SharedPreferences
 import eu.kanade.tachiyomi.source.online.HttpSource
-import uy.kohesive.injekt.Injekt
 
 public inline fun HttpSource.getPreferences(
     migration: SharedPreferences.() -> Unit = { },
@@ -15,10 +14,15 @@ public inline fun HttpSource.getPreferencesLazy(
 
 @Suppress("NOTHING_TO_INLINE")
 public inline fun getPreferences(sourceId: Long): SharedPreferences {
-    return try {
-        Injekt.get<Application>().getSharedPreferences("source_$sourceId", 0x0000)
-    } catch (e: Exception) {
-        System.err.println("AnymeXPreferences: Failed to get SharedPreferences for source $sourceId: ${e.message}")
-        keiyoushi.utils.InMemorySharedPreferences()
+    val application: Application? = PreferencesHost.application
+    if (application != null) {
+        try {
+            return application.getSharedPreferences("source_$sourceId", 0x0000)
+        } catch (e: Exception) {
+            System.err.println("AnymeXPreferences: Failed to get SharedPreferences for source $sourceId: ${e.message}")
+        }
+    } else {
+        System.err.println("AnymeXPreferences: No Application bound for source $sourceId")
     }
+    return keiyoushi.utils.InMemorySharedPreferences()
 }
