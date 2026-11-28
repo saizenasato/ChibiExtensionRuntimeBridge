@@ -20,7 +20,10 @@ object BridgeProtocol {
     /** Incremented whenever the wire contract changes in a breaking way. */
     const val VERSION: Int = 1
 
-    /** Runtime host package shipped with this project (AnymeX host lineage). */
+    /**
+     * Runtime host package shipped with this project. Deliberately distinct from
+     * AnymeX's own `com.anymex.runtimehost` bridge so the two can coexist.
+     */
     const val HOST_PACKAGE: String = "io.chibi.runtimehost"
 
     const val ACTION_HOST_SERVICE: String = "io.chibi.bridge.action.RUNTIME_HOST"

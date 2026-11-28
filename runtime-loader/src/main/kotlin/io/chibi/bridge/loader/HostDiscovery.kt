@@ -41,8 +41,8 @@ data class InstalledHost(
 object HostDiscovery {
 
     /**
-     * All runtime hosts installed on the device. The AnymeX-derived host keeps
-     * the original package id so existing installations keep working.
+     * All runtime hosts installed on the device. Only this project's host package
+     * is probed; AnymeX's separate `com.anymex.runtimehost` bridge is never touched.
      */
     fun installedHosts(
         context: Context,

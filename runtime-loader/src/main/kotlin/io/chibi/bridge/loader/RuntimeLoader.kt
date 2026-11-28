@@ -31,7 +31,7 @@ object RuntimeLoader {
 
     const val TAG = "ChibiRuntimeLoader"
 
-    /** Default entry point of the runtime host APK (unchanged from upstream). */
+    /** Default entry point of this project's runtime host APK. */
     const val DEFAULT_BRIDGE_CLASS = "io.chibi.runtimehost.RuntimeBridge"
 
     /**
