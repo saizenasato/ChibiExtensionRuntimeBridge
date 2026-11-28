@@ -1,11 +1,11 @@
-package com.anymex.runtimehost.aniyomi
+package io.chibi.runtimehost.aniyomi
 
 import android.content.Context
-import com.anymex.runtimehost.LogLevel
-import com.anymex.runtimehost.Logger
-import com.anymex.runtimehost.aniyomi.models.ExtensionJsonObject
-import com.anymex.runtimehost.aniyomi.models.toAnimeExtensions
-import com.anymex.runtimehost.aniyomi.models.toMangaExtensions
+import io.chibi.runtimehost.LogLevel
+import io.chibi.runtimehost.Logger
+import io.chibi.runtimehost.aniyomi.models.ExtensionJsonObject
+import io.chibi.runtimehost.aniyomi.models.toAnimeExtensions
+import io.chibi.runtimehost.aniyomi.models.toMangaExtensions
 import eu.kanade.tachiyomi.extension.anime.model.AnimeExtension
 import eu.kanade.tachiyomi.extension.anime.model.AnimeLoadResult
 import eu.kanade.tachiyomi.extension.manga.model.MangaExtension

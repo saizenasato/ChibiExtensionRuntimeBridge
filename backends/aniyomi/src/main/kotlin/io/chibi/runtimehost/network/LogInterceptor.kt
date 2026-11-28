@@ -1,7 +1,7 @@
-package com.anymex.runtimehost.network
+package io.chibi.runtimehost.network
 
-import com.anymex.runtimehost.LogLevel
-import com.anymex.runtimehost.Logger
+import io.chibi.runtimehost.LogLevel
+import io.chibi.runtimehost.Logger
 import okhttp3.Interceptor
 import okhttp3.Response
 import java.util.concurrent.TimeUnit

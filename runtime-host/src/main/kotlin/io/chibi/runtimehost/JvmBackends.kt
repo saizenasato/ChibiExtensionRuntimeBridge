@@ -11,7 +11,7 @@
 package io.chibi.runtimehost
 
 import android.content.Context
-import com.anymex.runtimehost.RuntimeBridge
+import io.chibi.runtimehost.RuntimeBridge
 import io.chibi.bridge.backend.BackendContext
 import io.chibi.bridge.backend.BackendException
 import io.chibi.bridge.backend.ExtensionBackend
@@ -517,7 +517,7 @@ class KotatsuBackend : ExtensionBackend {
         ctx = context
         app = context.appContext
         withContext(Dispatchers.IO) {
-            com.anymex.runtimehost.kotatsu.KotatsuExtensionLoader.initialize(app)
+            io.chibi.runtimehost.kotatsu.KotatsuExtensionLoader.initialize(app)
             initialized = true
         }
     }

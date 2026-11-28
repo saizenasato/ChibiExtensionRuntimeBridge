@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.anymex.runtimehost.kotatsu"
+    namespace = "io.chibi.runtimehost.kotatsu"
     compileSdk = 36
     defaultConfig { minSdk = 26 }
     compileOptions {

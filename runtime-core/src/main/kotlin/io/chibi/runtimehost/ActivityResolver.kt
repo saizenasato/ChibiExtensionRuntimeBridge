@@ -6,7 +6,7 @@
  * The host calls [update] from RuntimeBridge.initialize and whenever the
  * activity lifecycle changes; backends call [resolveActivity].
  */
-package com.anymex.runtimehost
+package io.chibi.runtimehost
 
 import android.app.Activity
 import android.content.Context

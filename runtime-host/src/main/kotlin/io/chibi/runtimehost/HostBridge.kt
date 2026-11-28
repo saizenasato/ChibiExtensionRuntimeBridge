@@ -2,7 +2,7 @@
  * Native replacement for the AnymeX Flutter plugin's `AnymexExtensionRuntimeBridgePlugin`.
  *
  * Upstream the plugin received MethodChannel calls and reflected into the
- * runtime host APK's `com.anymex.runtimehost.RuntimeBridge`. Here the same
+ * runtime host APK's `io.chibi.runtimehost.RuntimeBridge`. Here the same
  * dispatch happens in-process inside the host APK and is exposed through the
  * AIDL service. Every method name mirrors the original channel handlers so the
  * behaviour stays traceable to upstream.
@@ -11,7 +11,7 @@ package io.chibi.runtimehost
 
 import android.content.Context
 import android.os.Build
-import com.anymex.runtimehost.RuntimeBridge
+import io.chibi.runtimehost.RuntimeBridge
 import io.chibi.bridge.backend.BackendContext
 import io.chibi.bridge.backend.BackendException
 import io.chibi.bridge.backend.BackendRegistry

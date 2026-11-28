@@ -9,7 +9,7 @@
 package io.chibi.runtimehost
 
 import android.content.Context
-import com.anymex.runtimehost.RuntimeBridge
+import io.chibi.runtimehost.RuntimeBridge
 import io.chibi.bridge.backend.TachiyomiEngine
 import io.chibi.bridge.models.Episode
 import io.chibi.bridge.models.Media

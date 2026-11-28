@@ -1,4 +1,4 @@
-package com.anymex.runtimehost.aniyomi.models
+package io.chibi.runtimehost.aniyomi.models
 
 import android.annotation.SuppressLint
 import eu.kanade.tachiyomi.extension.anime.model.AnimeExtension

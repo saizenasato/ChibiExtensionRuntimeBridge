@@ -5,10 +5,10 @@ plugins {
 }
 
 android {
-    namespace = "com.anymex.runtimehost"
+    namespace = "io.chibi.runtimehost"
     compileSdk = 36
     defaultConfig {
-        applicationId = "com.anymex.runtimehost"
+        applicationId = "io.chibi.runtimehost"
         minSdk = 26
         targetSdk = 36
         versionCode = System.getenv("CHIBI_VERSION_CODE")?.toIntOrNull() ?: 1

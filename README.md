@@ -5,7 +5,9 @@ It replaces the Flutter/Dart bridge with a reusable Kotlin SDK plus a separately
 installable, headless **runtime host APK** that loads and executes third-party
 extension binaries in a sandboxed class loader.
 
-* Runtime host: `com.anymex.runtimehost` (kept for extension binary compatibility)
+* Runtime host: `io.chibi.runtimehost` — this project's own package id, deliberately
+  different from AnymeX's `com.anymex.runtimehost` so both bridges can be installed
+  on the same device without replacing each other
 * SDK: `io.chibi.bridge.sdk.ChibiRuntime` (suspend API + `Flow`, shipped as an AAR)
 * IPC: AIDL binder service `io.chibi.bridge.action.RUNTIME_HOST` carrying JSON
   `BridgeRequest` / `BridgeResponse` payloads

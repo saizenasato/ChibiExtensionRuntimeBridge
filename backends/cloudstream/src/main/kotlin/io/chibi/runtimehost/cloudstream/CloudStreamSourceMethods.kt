@@ -1,4 +1,4 @@
-package com.anymex.runtimehost.cloudstream
+package io.chibi.runtimehost.cloudstream
 
 import android.util.Log
 import com.lagradost.cloudstream3.*

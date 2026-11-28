@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.anymex.runtimehost.core"
+    namespace = "io.chibi.runtimehost.core"
     compileSdk = 36
     defaultConfig { minSdk = 26 }
     compileOptions {

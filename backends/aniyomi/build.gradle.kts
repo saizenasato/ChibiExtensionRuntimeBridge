@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.anymex.runtimehost.aniyomi"
+    namespace = "io.chibi.runtimehost.aniyomi"
     compileSdk = 36
     defaultConfig { minSdk = 26 }
     compileOptions {

@@ -32,7 +32,7 @@ object RuntimeLoader {
     const val TAG = "ChibiRuntimeLoader"
 
     /** Default entry point of the runtime host APK (unchanged from upstream). */
-    const val DEFAULT_BRIDGE_CLASS = "com.anymex.runtimehost.RuntimeBridge"
+    const val DEFAULT_BRIDGE_CLASS = "io.chibi.runtimehost.RuntimeBridge"
 
     /**
      * Same delegation policy as the original loader: platform and bridge packages
@@ -54,7 +54,7 @@ object RuntimeLoader {
                 name.startsWith("androidx.") ||
                 name.startsWith("java.") ||
                 name.startsWith("javax.") ||
-                name.startsWith("com.anymex.runtimehost.") ||
+                name.startsWith("io.chibi.runtimehost.") ||
                 name.startsWith("io.chibi.bridge.")
         }
 

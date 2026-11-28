@@ -1,4 +1,4 @@
-package com.anymex.runtimehost
+package io.chibi.runtimehost
 
 import android.app.Activity
 import android.app.Application
@@ -6,11 +6,11 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.os.Bundle
 import android.util.Log
-import com.anymex.runtimehost.aniyomi.AnimeSourceMethods
-import com.anymex.runtimehost.aniyomi.AniyomiExtensionManager
-import com.anymex.runtimehost.aniyomi.AniyomiSourceMethods
-import com.anymex.runtimehost.aniyomi.MangaSourceMethods
-import com.anymex.runtimehost.network.MangaImageProxy
+import io.chibi.runtimehost.aniyomi.AnimeSourceMethods
+import io.chibi.runtimehost.aniyomi.AniyomiExtensionManager
+import io.chibi.runtimehost.aniyomi.AniyomiSourceMethods
+import io.chibi.runtimehost.aniyomi.MangaSourceMethods
+import io.chibi.runtimehost.network.MangaImageProxy
 import java.lang.ref.WeakReference
 import java.net.URLEncoder
 
@@ -359,7 +359,7 @@ object RuntimeBridge {
     ): List<Map<String, Any?>> {
         val m = media(context, sourceId, isAnime)
         return if (isAnime) {
-            val source = (m as? com.anymex.runtimehost.aniyomi.AnimeSourceMethods)?.source ?: return emptyList()
+            val source = (m as? io.chibi.runtimehost.aniyomi.AnimeSourceMethods)?.source ?: return emptyList()
             val filterList = try {
                 source.getFilterList()
             } catch (e: Throwable) {
@@ -368,7 +368,7 @@ object RuntimeBridge {
             }
             filterList.list.map { serializeAnimeFilter(it) }
         } else {
-            val source = (m as? com.anymex.runtimehost.aniyomi.MangaSourceMethods)?.source ?: return emptyList()
+            val source = (m as? io.chibi.runtimehost.aniyomi.MangaSourceMethods)?.source ?: return emptyList()
             val filterList = try {
                 source.getFilterList()
             } catch (e: Throwable) {
@@ -779,7 +779,7 @@ object RuntimeBridge {
         
         try {
             media(context, sourceId, isAnime).setupPreferenceScreen(screen)
-        } catch (e: com.anymex.runtimehost.aniyomi.NoPreferenceScreenException) {
+        } catch (e: io.chibi.runtimehost.aniyomi.NoPreferenceScreenException) {
             return@runBlocking emptyList<Map<String, Any?>>()
         } catch (t: Throwable) {
             android.util.Log.w("RuntimeBridge", "setupPreferenceScreen failed for source $sourceId: $t")
@@ -1051,11 +1051,11 @@ object RuntimeBridge {
             if (apiName != null) {
                 val provider = APIHolder.apis.find { it.name.equals(apiName, ignoreCase = true) }
                     ?: return@async mapOf("list" to emptyList<Any>(), "hasNextPage" to false)
-                com.anymex.runtimehost.cloudstream.CloudStreamSourceMethods(provider).search(query, page)
+                io.chibi.runtimehost.cloudstream.CloudStreamSourceMethods(provider).search(query, page)
             } else {
                 val allItems = APIHolder.apis.flatMap { provider ->
                     @Suppress("UNCHECKED_CAST")
-                    com.anymex.runtimehost.cloudstream.CloudStreamSourceMethods(provider)
+                    io.chibi.runtimehost.cloudstream.CloudStreamSourceMethods(provider)
                         .search(query, page)["list"] as? List<Map<String, Any?>> ?: emptyList()
                 }
                 mapOf("list" to allItems, "hasNextPage" to false)
@@ -1082,7 +1082,7 @@ object RuntimeBridge {
             try {
                 val provider = APIHolder.apis.find { it.name.equals(apiName, ignoreCase = true) }
                     ?: return@async mapOf("title" to null, "url" to url, "error" to "Provider not found")
-                com.anymex.runtimehost.cloudstream.CloudStreamSourceMethods(provider).getDetails(url) ?: emptyMap()
+                io.chibi.runtimehost.cloudstream.CloudStreamSourceMethods(provider).getDetails(url) ?: emptyMap()
             } catch (e: Exception) {
                 Log.e(TAG, "csGetDetail failed: ${e.message}")
                 mapOf("title" to null, "url" to url, "error" to e.message)
@@ -1108,7 +1108,7 @@ object RuntimeBridge {
         val job = scope.async {
             val provider = APIHolder.apis.find { it.name.equals(apiName, ignoreCase = true) }
                 ?: throw IllegalArgumentException("Provider '$apiName' not found")
-            com.anymex.runtimehost.cloudstream.CloudStreamSourceMethods(provider).loadLinks(url)
+            io.chibi.runtimehost.cloudstream.CloudStreamSourceMethods(provider).loadLinks(url)
         }
         if (token != null) activeRequests[token] = job
         return try {
@@ -1136,7 +1136,7 @@ object RuntimeBridge {
                 val provider = APIHolder.apis.find { it.name.equals(apiName, ignoreCase = true) }
                     ?: throw IllegalArgumentException("Provider '$apiName' not found")
                 
-                com.anymex.runtimehost.cloudstream.CloudStreamSourceMethods(provider)
+                io.chibi.runtimehost.cloudstream.CloudStreamSourceMethods(provider)
                     .loadLinksStream(url, onLinkFound)
             }
         } catch (e: Exception) {
@@ -1154,7 +1154,7 @@ object RuntimeBridge {
     @JvmOverloads
     fun kotatsuLoadExtensions(context: Context, folderPath: String?): List<Map<String, Any?>> {
         return runBlocking {
-            com.anymex.runtimehost.kotatsu.KotatsuExtensionLoader.loadExtensions(context, folderPath)
+            io.chibi.runtimehost.kotatsu.KotatsuExtensionLoader.loadExtensions(context, folderPath)
         }
     }
 
@@ -1162,7 +1162,7 @@ object RuntimeBridge {
     @JvmOverloads
     fun kotatsuGetPopular(context: Context, sourceId: String, page: Int): Map<String, Any?> {
         return runBlocking {
-            com.anymex.runtimehost.kotatsu.KotatsuExtensionLoader.getPopular(sourceId, page)
+            io.chibi.runtimehost.kotatsu.KotatsuExtensionLoader.getPopular(sourceId, page)
         }
     }
 
@@ -1170,7 +1170,7 @@ object RuntimeBridge {
     @JvmOverloads
     fun kotatsuGetLatestUpdates(context: Context, sourceId: String, page: Int): Map<String, Any?> {
         return runBlocking {
-            com.anymex.runtimehost.kotatsu.KotatsuExtensionLoader.getLatestUpdates(sourceId, page)
+            io.chibi.runtimehost.kotatsu.KotatsuExtensionLoader.getLatestUpdates(sourceId, page)
         }
     }
 
@@ -1178,7 +1178,7 @@ object RuntimeBridge {
     @JvmOverloads
     fun kotatsuSearch(context: Context, sourceId: String, query: String, page: Int): Map<String, Any?> {
         return runBlocking {
-            com.anymex.runtimehost.kotatsu.KotatsuExtensionLoader.search(sourceId, query, page)
+            io.chibi.runtimehost.kotatsu.KotatsuExtensionLoader.search(sourceId, query, page)
         }
     }
 
@@ -1186,7 +1186,7 @@ object RuntimeBridge {
     @JvmOverloads
     fun kotatsuGetDetail(context: Context, sourceId: String, url: String, title: String, cover: String): Map<String, Any?> {
         return runBlocking {
-            com.anymex.runtimehost.kotatsu.KotatsuExtensionLoader.getDetails(sourceId, url, title, cover)
+            io.chibi.runtimehost.kotatsu.KotatsuExtensionLoader.getDetails(sourceId, url, title, cover)
         }
     }
 
@@ -1194,7 +1194,7 @@ object RuntimeBridge {
     @JvmOverloads
     fun kotatsuGetPageList(context: Context, sourceId: String, url: String, name: String): List<Map<String, Any?>> {
         return runBlocking {
-            com.anymex.runtimehost.kotatsu.KotatsuExtensionLoader.getPageList(sourceId, url, name)
+            io.chibi.runtimehost.kotatsu.KotatsuExtensionLoader.getPageList(sourceId, url, name)
         }
     }
 

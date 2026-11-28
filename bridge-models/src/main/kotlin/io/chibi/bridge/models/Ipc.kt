@@ -21,7 +21,7 @@ object BridgeProtocol {
     const val VERSION: Int = 1
 
     /** Runtime host package shipped with this project (AnymeX host lineage). */
-    const val HOST_PACKAGE: String = "com.anymex.runtimehost"
+    const val HOST_PACKAGE: String = "io.chibi.runtimehost"
 
     const val ACTION_HOST_SERVICE: String = "io.chibi.bridge.action.RUNTIME_HOST"
     const val SERVICE_DESCRIPTOR: String = "io.chibi.bridge.ipc.IChibiRuntime"

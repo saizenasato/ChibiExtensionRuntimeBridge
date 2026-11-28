@@ -1,4 +1,4 @@
-package com.anymex.runtimehost.aniyomi
+package io.chibi.runtimehost.aniyomi
 
 import android.content.Context
 import android.content.pm.ApplicationInfo
@@ -10,8 +10,8 @@ import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import androidx.core.content.pm.PackageInfoCompat
 import androidx.core.graphics.createBitmap
-import com.anymex.runtimehost.LogLevel
-import com.anymex.runtimehost.Logger
+import io.chibi.runtimehost.LogLevel
+import io.chibi.runtimehost.Logger
 import dalvik.system.PathClassLoader
 import eu.kanade.tachiyomi.animesource.AnimeCatalogueSource
 import eu.kanade.tachiyomi.animesource.AnimeSource

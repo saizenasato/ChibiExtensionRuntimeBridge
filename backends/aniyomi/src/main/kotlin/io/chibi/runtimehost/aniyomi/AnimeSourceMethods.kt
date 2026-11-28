@@ -1,4 +1,4 @@
-package com.anymex.runtimehost.aniyomi
+package io.chibi.runtimehost.aniyomi
 import android.util.Log
 import eu.kanade.tachiyomi.PreferenceScreen
 import eu.kanade.tachiyomi.animesource.AnimeSource

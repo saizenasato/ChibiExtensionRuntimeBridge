@@ -1,6 +1,6 @@
-package com.anymex.runtimehost.aniyomi
+package io.chibi.runtimehost.aniyomi
 
-import com.anymex.runtimehost.Logger
+import io.chibi.runtimehost.Logger
 import eu.kanade.tachiyomi.PreferenceScreen
 import eu.kanade.tachiyomi.animesource.model.AnimeUpdateStrategy
 import eu.kanade.tachiyomi.animesource.model.AnimesPage

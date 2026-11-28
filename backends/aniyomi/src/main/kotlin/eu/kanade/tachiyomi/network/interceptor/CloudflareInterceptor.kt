@@ -82,7 +82,7 @@ class CloudflareInterceptor(
         var cloudflareBypassed = false
         val origRequestUrl = originalRequest.url.toString()
         val headers = parseHeaders(originalRequest.headers)
-        val activity = com.anymex.runtimehost.ActivityResolver.resolveAppCompatActivity(context)
+        val activity = io.chibi.runtimehost.ActivityResolver.resolveAppCompatActivity(context)
 
         executor.execute {
             val webViewContext = activity ?: context

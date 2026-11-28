@@ -4,7 +4,7 @@
 client app ── bridge-sdk (ChibiRuntime) ──┐
                                           │ AIDL binder, JSON BridgeRequest/Response
                                           ▼
-                       runtime-host APK (com.anymex.runtimehost)
+                       runtime-host APK (io.chibi.runtimehost)
                        ├── ChibiRuntimeService  (IChibiRuntime.Stub)
                        ├── HostBridge           (method dispatch, BackendRegistry)
                        ├── JvmBackends          (Aniyomi / CloudStream / Kotatsu adapters)
@@ -24,7 +24,7 @@ The host runs in its own process-independent package and is started by binding
 the exported service; it has **no launcher activity**. Clients bind with:
 
 ```kotlin
-Intent("io.chibi.bridge.action.RUNTIME_HOST").setPackage("com.anymex.runtimehost")
+Intent("io.chibi.bridge.action.RUNTIME_HOST").setPackage("io.chibi.runtimehost")
 ```
 
 Binder calls are synchronous, so SDK methods run on `Dispatchers.IO` and expose

@@ -47,7 +47,7 @@
             android:name=".HostInstallReceiver"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.anymex.runtimehost.CHIBI_INSTALL_RESULT" />
+                <action android:name="io.chibi.runtimehost.CHIBI_INSTALL_RESULT" />
             </intent-filter>
         </receiver>
     </application>

@@ -1,7 +1,7 @@
 @file:Suppress("DEPRECATION")
 @file:OptIn(org.koitharu.kotatsu.parsers.InternalParsersApi::class)
 
-package com.anymex.runtimehost.kotatsu
+package io.chibi.runtimehost.kotatsu
 
 import android.content.Context
 import android.graphics.BitmapFactory

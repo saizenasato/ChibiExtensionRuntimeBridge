@@ -9,8 +9,8 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
 import androidx.core.content.pm.PackageInfoCompat
-import com.anymex.runtimehost.LogLevel
-import com.anymex.runtimehost.Logger
+import io.chibi.runtimehost.LogLevel
+import io.chibi.runtimehost.Logger
 import android.content.pm.ApplicationInfo
 import android.graphics.Canvas
 import dalvik.system.BaseDexClassLoader

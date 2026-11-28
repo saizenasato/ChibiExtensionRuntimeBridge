@@ -51,7 +51,7 @@ abstract class WebViewInterceptor(
     }
 
     fun createWebView(request: Request): WebView {
-        val webViewContext = com.anymex.runtimehost.ActivityResolver.resolveAppCompatActivity(context) ?: context
+        val webViewContext = io.chibi.runtimehost.ActivityResolver.resolveAppCompatActivity(context) ?: context
         return WebView(webViewContext).apply {
             setDefaultSettings()
             settings.userAgentString = request.header("User-Agent") ?: defaultUserAgentProvider()

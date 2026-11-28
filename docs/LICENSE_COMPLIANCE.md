@@ -21,9 +21,10 @@ public — which this repository is.
    applied beyond attribution.
 5. **Third-party binary compatibility.** Package names from Aniyomi
    (`eu.kanade.tachiyomi.*`), CloudStream (`com.lagradost.cloudstream3.*`) and
-   the host (`com.anymex.runtimehost`) are retained solely so that existing
-   extension APKs link at runtime; this does not imply endorsement by those
-   projects.
+   Keiyoushi (`keiyoushi.*`) are retained solely so that existing extension APKs
+   link at runtime; this does not imply endorsement by those projects. This
+   project's own runtime host uses `io.chibi.runtimehost`, an id distinct from
+   AnymeX's `com.anymex.runtimehost`, so neither bridge replaces the other.
 
 ## Dependency licences
 

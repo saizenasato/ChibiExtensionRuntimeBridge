@@ -217,7 +217,7 @@ object PluginManager {
                 }
 
                 val loadContext = (context as? AppCompatActivity)
-                    ?: com.anymex.runtimehost.ActivityResolver.resolveAppCompatActivity(context)
+                    ?: io.chibi.runtimehost.ActivityResolver.resolveAppCompatActivity(context)
                     ?: context
                 pluginInstance.load(loadContext)
             } else {

@@ -1,4 +1,4 @@
-package com.anymex.runtimehost.network
+package io.chibi.runtimehost.network
 
 import android.content.Context
 import eu.kanade.tachiyomi.source.online.HttpSource
@@ -178,7 +178,7 @@ object MangaImageProxy {
         pageUrl: String,
         pageNumber: Int
     ): ResponseData? {
-        val manager = uy.kohesive.injekt.Injekt.get<com.anymex.runtimehost.aniyomi.AniyomiExtensionManager>()
+        val manager = uy.kohesive.injekt.Injekt.get<io.chibi.runtimehost.aniyomi.AniyomiExtensionManager>()
         
         val src = manager.installedMangaExtensions
             .asSequence()
