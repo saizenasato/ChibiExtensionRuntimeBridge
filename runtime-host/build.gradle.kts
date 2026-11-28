@@ -12,7 +12,7 @@ android {
         minSdk = 26
         targetSdk = 36
         versionCode = System.getenv("CHIBI_VERSION_CODE")?.toIntOrNull() ?: 1
-        versionName = System.getenv("CHIBI_VERSION_NAME") ?: "2.0.0-chibi"
+        versionName = System.getenv("CHIBI_VERSION_NAME") ?: "2.0.1-chibi"
     }
     buildTypes {
         release {

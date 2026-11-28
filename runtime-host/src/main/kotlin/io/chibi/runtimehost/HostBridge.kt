@@ -65,7 +65,7 @@ import kotlinx.serialization.json.put
 object HostBridge {
 
     private const val TAG = "ChibiHostBridge"
-    const val VERSION_NAME = "2.0.0-chibi"
+    const val VERSION_NAME = "2.0.1-chibi"
 
     private const val PREFS_NAME = "chibi_runtime_prefs"
 
