@@ -11,8 +11,8 @@ android {
         applicationId = "com.anymex.runtimehost"
         minSdk = 26
         targetSdk = 36
-        versionCode = 1
-        versionName = "2.0.0-chibi"
+        versionCode = System.getenv("CHIBI_VERSION_CODE")?.toIntOrNull() ?: 1
+        versionName = System.getenv("CHIBI_VERSION_NAME") ?: "2.0.0-chibi"
     }
     buildTypes {
         release {

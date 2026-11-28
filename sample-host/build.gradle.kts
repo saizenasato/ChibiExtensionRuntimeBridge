@@ -10,8 +10,8 @@ android {
         applicationId = "io.chibi.bridge.sample"
         minSdk = 26
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = System.getenv("CHIBI_VERSION_CODE")?.toIntOrNull() ?: 1
+        versionName = System.getenv("CHIBI_VERSION_NAME") ?: "1.0"
     }
     buildTypes {
         release {

@@ -89,7 +89,7 @@ jobs:
             :sample-host:assembleRelease \
             :bridge-sdk:assembleRelease \
             :bridge-api:assembleRelease \
-            :bridge-models:assembleRelease \
+            :bridge-models:assemble \
             --stacktrace
         env:
           CHIBI_VERSION_NAME: ${{ steps.vars.outputs.version }}
@@ -103,11 +103,14 @@ jobs:
           host_apk=$(find runtime-host/build/outputs/apk/release -name '*.apk' | head -1)
           sample_apk=$(find sample-host/build/outputs/apk/release -name '*.apk' | head -1)
           cp "$host_apk" "dist/chibi-runtime-host-${VERSION}.apk"
-          [ -n "$sample_apk" ] && cp "$sample_apk" "dist/chibi-sample-host-${VERSION}.apk" || true
-          for aar in bridge-sdk bridge-api bridge-models; do
+          cp "$sample_apk" "dist/chibi-sample-host-${VERSION}.apk"
+          # bridge-sdk and bridge-api package Android libraries, bridge-models is a plain JVM jar.
+          for aar in bridge-sdk bridge-api; do
             f=$(find "$aar/build/outputs/aar" -name '*-release.aar' | head -1)
-            [ -n "$f" ] && cp "$f" "dist/${aar}-${VERSION}.aar" || true
+            cp "$f" "dist/${aar}-${VERSION}.aar"
           done
+          models=$(find bridge-models/build/libs -name '*.jar' ! -name '*-sources.jar' | head -1)
+          cp "$models" "dist/bridge-models-${VERSION}.jar"
           (cd dist && sha256sum ./* > SHA256SUMS.txt)
           ls -l dist
 
